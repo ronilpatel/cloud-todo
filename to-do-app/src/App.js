@@ -1,16 +1,20 @@
-import logo from './logo.svg';
-import './App.css';
+import "./App.css";
+import { Route, Routes } from "react-router";
+// import { useState } from "react";
+import LoginPage from "./components/login";
+import SignUpPage from "./components/signup";
+import TaskForm from "./components/createTask";
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Cloud Project: To Do Application
-        </p>
-      </header>
-    </div>
+    <>
+      <Routes>
+        <Route path="/" element={<LoginPage />}></Route>
+        <Route path="/signup" element={<SignUpPage />}></Route>
+        <Route path="/login" element={<LoginPage />}></Route>
+        <Route path="/task/create" element={<TaskForm />}></Route>
+      </Routes>
+    </>
   );
 }
 
