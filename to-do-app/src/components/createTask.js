@@ -1,5 +1,6 @@
-// TaskForm.js
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+
+console.log(JSON.parse(localStorage.getItem("user")));
 
 const TaskForm = () => {
   const [formData, setFormData] = useState({
@@ -24,12 +25,7 @@ const TaskForm = () => {
     
     try {
       const apiURL = 'https://i0zuxml940.execute-api.us-east-1.amazonaws.com/dev/task';
-      const user = {
-        id: '4a302c1d-2e5d-11ee-949d-4551c1e4c1b2',
-        name: 'Ronil Patel',
-        email: 'ronil.patel@dal.ca',
-        password: '123456789',
-      };
+      const user = JSON.parse(localStorage.getItem("user"));;
       const dataToSend = {
         ...formData,
         user,
@@ -46,8 +42,6 @@ const TaskForm = () => {
       if (!response.ok) {
         throw new Error('Failed to create task. Please try again.');
       }
-
-      // The API response can be processed here if needed
       console.log('Task created successfully!');
     } catch (error) {
       console.error(error.message);

@@ -1,20 +1,21 @@
-import './App.css'
-// import { Routes, Route, BrowserRouter } from "react-router-dom";
+import "./App.css";
+import { Route, Routes } from "react-router";
 // import { useState } from "react";
-
+import LoginPage from "./components/login";
+import SignUpPage from "./components/signup";
+import TaskForm from "./components/createTask";
 
 function App() {
-	return (
-		<div className="App">
-				{/* <Navbar></Navbar> */}
-				<div className="auth-wrapper">
-          <div className="auth-inner">
-            {/* <Main ></Main> */}
-					</div>
-				</div>
-		</div>
-		
-	);
+  return (
+    <>
+      <Routes>
+        <Route path="/" element={<LoginPage />}></Route>
+        <Route path="/signup" element={<SignUpPage />}></Route>
+        <Route path="/login" element={<LoginPage />}></Route>
+        <Route path="/task/create" element={<TaskForm />}></Route>
+      </Routes>
+    </>
+  );
 }
 
 export default App;

@@ -1,4 +1,3 @@
-// LoginPage.js
 import React, { useState } from 'react';
 
 const LoginPage = () => {
@@ -26,16 +25,16 @@ const LoginPage = () => {
         },
         body: JSON.stringify(formData),
       });
-
+      
       if (!response.ok) {
         throw new Error('Login failed. Please check your email and password.');
       }
 
-      // The API response can be processed here if needed
       const data = await response.json();
-      console.log('Login successful!', data);
+      console.log('Login successful!', data.body.data[0]);
+      localStorage.setItem("user", JSON.stringify(data.body.data[0]));
     } catch (error) {
-      console.error(error.message);
+      console.error(error);
     }
   };
 
