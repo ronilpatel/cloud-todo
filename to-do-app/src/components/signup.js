@@ -1,7 +1,10 @@
 // SignUpPage.js
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const SignUpPage = () => {
+
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -34,6 +37,8 @@ const SignUpPage = () => {
 
       // The API response can be processed here if needed
       console.log('Registration successful!');
+
+      navigate('/login');
     } catch (error) {
       console.error(error.message);
     }

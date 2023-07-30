@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const LoginPage = () => {
+
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -33,6 +36,7 @@ const LoginPage = () => {
       const data = await response.json();
       console.log('Login successful!', data.body.data[0]);
       localStorage.setItem("user", JSON.stringify(data.body.data[0]));
+      navigate('/task/list');
     } catch (error) {
       console.error(error);
     }
