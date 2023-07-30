@@ -17,6 +17,10 @@ const LoginPage = () => {
     }));
   };
 
+  const handleSignup = () => {
+    navigate('/signup');
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     
@@ -72,6 +76,9 @@ const LoginPage = () => {
         </div>
         <button type="submit" style={loginButtonStyle}>Login</button>
       </form>
+      <button onClick={handleSignup} style={signupButtonStyle}>
+          Signup
+      </button>
     </div>
     </div>
   );
@@ -127,6 +134,11 @@ const loginButtonStyle = {
   borderRadius: '4px', // Add border-radius for rounded corners
   cursor: 'pointer', // Show pointer cursor on hover
   marginTop: '10px',
+};
+
+const signupButtonStyle = {
+  ...loginButtonStyle,
+  background: 'blue', // Blue background color for Signup button
 };
 
 export default LoginPage;
