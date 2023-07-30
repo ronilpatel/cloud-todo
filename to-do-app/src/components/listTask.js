@@ -32,22 +32,55 @@ const TaskList = () => {
     }
   };
 
-  const handleDelete = async (taskId) => {
+  const handleDelete = async (task) => {
     try {
-      // Make API call to delete the task with taskId
-      // ... Implement delete API call here ...
+        console.log(task);
+      const response = await fetch(`https://2krwbmgcvj.execute-api.us-east-1.amazonaws.com/task/${task}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(task),
+      });
+      console.log(response);
+
+      if (!response.ok) {
+        throw new Error('Failed to delete task. Please try again.');
+      }
 
       // After successful deletion, update the state to remove the deleted task from the list
-      setTasks((prevTasks) => prevTasks.filter((task) => task.id !== taskId));
+    //   setTasks((prevTasks) => prevTasks.filter((t) => t.id !== task.id));
+    const user = JSON.parse(localStorage.getItem('user'));
+    const user_id = user?.id;
+    if (user_id) {
+      fetchTasks(user_id);
+    }
+    
+    navigate('/task/list');
+
     } catch (error) {
       console.error('Failed to delete task:', error.message);
     }
   };
 
+  const handleEdit = async (task) =>    {
+    console.log(task);
+    navigate('/task/create', {state : task});
+  }
+
   return (
     <div>
       <h1>Task List</h1>
-      <button onClick={handleCreateTask}>Create Task</button> {/* New "Create Task" button */}
+      <div style={{ display: 'flex', justifyContent: 'center' }}>
+        <button
+          onClick={handleCreateTask}
+          style={{ fontSize: '1.5rem', padding: '10px 20px', backgroundColor: 'lightgreen'}} // Larger button size
+        >
+          Create Task
+        </button>
+      </div>
+      {/* <button onClick={handleCreateTask}>Create Task</button> */}
+      <br /><br /><br />
       <table style={{ borderCollapse: 'collapse', width: '100%' }}>
         <thead>
           <tr>
@@ -70,7 +103,18 @@ const TaskList = () => {
               <td style={tableCellStyle}>{task.priority}</td>
               <td style={tableCellStyle}>{task.status}</td>
               <td style={tableCellStyle}>
-                <button onClick={() => handleDelete(task.id)}>Delete</button>
+                <button
+                  onClick={() => handleEdit(task)}
+                  style={{ fontSize: '1.0rem', padding: '10px 20px', marginRight: '15px', backgroundColor: 'yellow' }} // Larger and yellow edit button with spacing
+                >
+                  Edit
+                </button>
+                <button
+                  onClick={() => handleDelete(task.id)}
+                  style={{ fontSize: '1.0rem', padding: '10px 20px', backgroundColor: 'red', color: 'white' }} // Larger and red delete button
+                >
+                  Delete
+                </button>
               </td>
             </tr>
           ))}
