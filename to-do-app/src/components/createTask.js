@@ -129,6 +129,7 @@ const TaskForm = () => {
             name="status"
             value={formData.status}
             onChange={handleChange}
+            disabled
             required
           >
             <option value="incomplete">Incomplete</option>

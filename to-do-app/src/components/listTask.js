@@ -32,6 +32,12 @@ const TaskList = () => {
     }
   };
 
+  const sortedTasks = tasks.sort((a, b) => {
+    if (a.status === 'incomplete' && b.status === 'complete') return -1;
+    if (a.status === 'complete' && b.status === 'incomplete') return 1;
+    return 0;
+  });
+
   const handleDelete = async (task) => {
     try {
         console.log(task);
@@ -55,12 +61,49 @@ const TaskList = () => {
     if (user_id) {
       fetchTasks(user_id);
     }
-    
+
     navigate('/task/list');
 
     } catch (error) {
       console.error('Failed to delete task:', error.message);
     }
+  };
+
+  const handleComplete = async (task) => {
+    console.log(task)
+    try {
+      const body = {
+        task_id: task.id,
+        status: 'complete',
+      };
+
+      const response = await fetch('https://i0zuxml940.execute-api.us-east-1.amazonaws.com/dev/task/complete', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(body),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to mark task as complete. Please try again.');
+      }
+
+      const user = JSON.parse(localStorage.getItem('user'));
+    const user_id = user?.id;
+    if (user_id) {
+      fetchTasks(user_id);
+    }
+
+    navigate('/task/list');
+    } catch (error) {
+      console.error('Failed to mark task as complete:', error.message);
+    }
+  };
+
+  const navigateToLogin = () => {
+    localStorage.clear();
+    navigate('/login');
   };
 
   const handleEdit = async (task) =>    {
@@ -69,12 +112,21 @@ const TaskList = () => {
   }
 
   return (
-    <div>
-      <h1>Task List</h1>
+    <div style={containerStyle}>
+        <div style={headerContainerStyle}>
+            <h1 style={headerStyle}>Task List</h1>
+            <button
+            onClick={navigateToLogin}
+            style={{ fontSize: '1rem', padding: '8px 16px', marginRight: '10px', backgroundColor: 'red', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}
+            >
+            Logout
+            </button>
+        </div>
+        
       <div style={{ display: 'flex', justifyContent: 'center' }}>
         <button
           onClick={handleCreateTask}
-          style={{ fontSize: '1.5rem', padding: '10px 20px', backgroundColor: 'lightgreen'}} // Larger button size
+          style={{ fontSize: '1.5rem', padding: '10px 20px', marginTop: '10px', backgroundColor: 'lightgreen'}} // Larger button size
         >
           Create Task
         </button>
@@ -94,26 +146,33 @@ const TaskList = () => {
           </tr>
         </thead>
         <tbody>
-          {tasks.map((task) => (
+          {sortedTasks.map((task) => (
             <tr key={task.id}>
               <td style={tableCellStyle}>{task.title}</td>
               <td style={tableCellStyle}>{task.description}</td>
               <td style={tableCellStyle}>{task.date}</td>
               <td style={tableCellStyle}>{task.time}</td>
               <td style={tableCellStyle}>{task.priority}</td>
-              <td style={tableCellStyle}>{task.status}</td>
+              <td style={{ ...tableCellStyle, color: task.status === 'complete' ? 'green' : 'red' }}>{task.status}</td>
               <td style={tableCellStyle}>
                 <button
                   onClick={() => handleEdit(task)}
-                  style={{ fontSize: '1.0rem', padding: '10px 20px', marginRight: '15px', backgroundColor: 'yellow' }} // Larger and yellow edit button with spacing
+                  disabled={task.status === 'complete'}
+                  style={{ fontSize: '1.0rem', padding: '10px 20px', marginRight: '15px', backgroundColor: 'yellow', cursor: task.status === 'complete' ? 'not-allowed' : 'pointer',}} // Larger and yellow edit button with spacing
                 >
                   Edit
                 </button>
                 <button
                   onClick={() => handleDelete(task.id)}
-                  style={{ fontSize: '1.0rem', padding: '10px 20px', backgroundColor: 'red', color: 'white' }} // Larger and red delete button
+                  style={{ fontSize: '1.0rem', padding: '10px 20px', marginRight: '15px', backgroundColor: 'red', color: 'white' }} // Larger and red delete button
                 >
                   Delete
+                </button>
+                <button
+                  onClick={() => handleComplete(task)}
+                  style={{ fontSize: '1.0rem', padding: '10px 20px', backgroundColor: 'lightgreen', color: 'black' }} // Larger and red delete button
+                >
+                  Complete
                 </button>
               </td>
             </tr>
@@ -137,6 +196,30 @@ const tableHeaderStyle = {
     padding: '8px',
     textAlign: 'left',
     border: '1px solid #ddd',
+  };
+
+  const containerStyle = {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    minHeight: '100vh',
+    background: '#f7f7f7',
+  };
+
+  const headerContainerStyle = {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    width: '100%',
+    padding: '5px',
+    background: '#007bff',
+    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+  };
+
+  const headerStyle = {
+    fontSize: '2.5rem',
+    padding: '5px',
+    color: 'white',
   };
 
 export default TaskList;
