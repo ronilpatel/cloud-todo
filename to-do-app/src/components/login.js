@@ -14,9 +14,9 @@ const LoginPage = () => {
   useEffect(() => {
     
     AWS.config.update({
-      accessKeyId: 'ASIASWTOHHX6P7GYTTMU',
-      secretAccessKey: 'gxkLlFwNTSVDpVWTtmsMTIxLkZSyMfUiLvUWtgVG',
-      sessionToken: 'FwoGZXIvYXdzEEQaDFSrGOrSowTpBS/3dyLAAYUVTlGI1o4TUy3R8Rpbl6AdUBukcLo2nkd3yJwQEBj0our58B7jsR/d5csMRB852TfnloAIwNALCYDw5KYiSmipKJG69k9cuFuGZ9OVoQ9B+/aZt6GqhmTnEyRcBCUxt92+SG36XjwON7GWkISQWcwpx/4cWp7pOidq+mB+nBnX0tlnLj55yRNZNQXafQSb6BcuDqALrOUWpjYLFdVgM7lBmM4u7MKi44njcipBpo+dFEZuDhkB2RQcRCvXbMYynyil5KGmBjIt58OGa5CNiwX/Q5wK6mu1gAyRPXXRPJ5u+MMLX1mttz2VQkOpuFQde5oSwS0c',
+      accessKeyId: 'ASIASWTOHHX6FDYG64OH',
+      secretAccessKey: 'eVFDR3+KxSimLL+wwxARciAVEkeW/RDslXHpm5B9',
+      sessionToken: 'FwoGZXIvYXdzEE4aDF7nqkptB0t2mu0CKCLAAaHhnwOsdnarT/DkEvVHWfXAyn6874ilBbkcQLPYvm7xfFuvLu9rxsIJKUXq8IjzML/a+1t61YIvmOdccPHE6LAQHOETu7PwtZgSsPRAccfDGlUwVrJ5see+IQRq/YZKFHU2gaAMMy6B43gMBpjV4Eg8GibsC8iZ2jH7uMtnLYrWbGN7y38QXz8eB31+OzwCsiPHyxFleUAiazsqddVrPwHrJ5snW+LERK1cT1MYnbhkKRedD66FGdqKjqOcxB2YuSiu9aOmBjItKz306uV8AXJUv2Nm/MBypue45+Z0tzBw4WkI38GXAAUh3Q5HQmaxMn5rGHki',
       region: 'us-east-1',
     });
     
