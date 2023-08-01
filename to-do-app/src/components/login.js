@@ -61,8 +61,7 @@ const LoginPage = () => {
     e.preventDefault();
     
     try {
-      // const response = await fetch(`${taskCreateEndpointUrl}/login`, {
-        const response = await fetch(`https://6y37iig8fi.execute-api.us-east-1.amazonaws.com/dev/user/login`, {
+      const response = await fetch(`${taskCreateEndpointUrl}/login`, {
         
         method: 'POST',
         headers: {
