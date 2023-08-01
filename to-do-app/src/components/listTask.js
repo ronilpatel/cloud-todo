@@ -1,8 +1,10 @@
 // TaskList.js
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import AWS from 'aws-sdk';
 
 const TaskList = () => {
+  const [HTTPApiTaskEndpoint, setHTTPApiTaskEndpoint] = useState('');
   const [tasks, setTasks] = useState([]);
   const navigate = useNavigate();
 
@@ -11,17 +13,49 @@ const TaskList = () => {
   };
 
   useEffect(() => {
-    // Fetch tasks from the API using the user_id from local storage
+    
     const user = JSON.parse(localStorage.getItem('user'));
     const user_id = user?.id;
     if (user_id) {
       fetchTasks(user_id);
     }
+
+    AWS.config.update({
+      accessKeyId: 'ASIASWTOHHX6P7GYTTMU',
+      secretAccessKey: 'gxkLlFwNTSVDpVWTtmsMTIxLkZSyMfUiLvUWtgVG',
+      sessionToken: 'FwoGZXIvYXdzEEQaDFSrGOrSowTpBS/3dyLAAYUVTlGI1o4TUy3R8Rpbl6AdUBukcLo2nkd3yJwQEBj0our58B7jsR/d5csMRB852TfnloAIwNALCYDw5KYiSmipKJG69k9cuFuGZ9OVoQ9B+/aZt6GqhmTnEyRcBCUxt92+SG36XjwON7GWkISQWcwpx/4cWp7pOidq+mB+nBnX0tlnLj55yRNZNQXafQSb6BcuDqALrOUWpjYLFdVgM7lBmM4u7MKi44njcipBpo+dFEZuDhkB2RQcRCvXbMYynyil5KGmBjIt58OGa5CNiwX/Q5wK6mu1gAyRPXXRPJ5u+MMLX1mttz2VQkOpuFQde5oSwS0c',
+      region: 'us-east-1',
+    });
+    
+    const secretsManager = new AWS.SecretsManager();
+    
+    const secretName = 'prod/todoapp/reactjs';
+    const params = {
+      SecretId: secretName,
+    };
+
+    secretsManager.getSecretValue(params, function (err, data) {
+      if (err) {
+        console.log('Error retrieving secret:', err);
+      } else {
+        console.log(data);
+        if ('SecretString' in data) {
+          const secretString = data.SecretString;
+          
+          const secretData = JSON.parse(secretString);
+          console.log(secretData);
+          setHTTPApiTaskEndpoint(secretData.HTTPApiTaskEndpoint);
+        } else {
+          console.log('Binary secret not supported.');
+        }
+      }
+    });
+
   }, []);
 
   const fetchTasks = async (user_id) => {
     try {
-      const response = await fetch(`https://2krwbmgcvj.execute-api.us-east-1.amazonaws.com/task/${user_id}`);
+      const response = await fetch(`${HTTPApiTaskEndpoint}/task/${user_id}`);
       if (!response.ok) {
         throw new Error('Failed to fetch tasks.');
       }
@@ -41,7 +75,7 @@ const TaskList = () => {
   const handleDelete = async (task) => {
     try {
         console.log(task);
-      const response = await fetch(`https://2krwbmgcvj.execute-api.us-east-1.amazonaws.com/task/${task}`, {
+      const response = await fetch(`${HTTPApiTaskEndpoint}/task/${task}`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
@@ -54,8 +88,6 @@ const TaskList = () => {
         throw new Error('Failed to delete task. Please try again.');
       }
 
-      // After successful deletion, update the state to remove the deleted task from the list
-    //   setTasks((prevTasks) => prevTasks.filter((t) => t.id !== task.id));
     const user = JSON.parse(localStorage.getItem('user'));
     const user_id = user?.id;
     if (user_id) {
@@ -77,7 +109,7 @@ const TaskList = () => {
         status: 'complete',
       };
 
-      const response = await fetch('https://i0zuxml940.execute-api.us-east-1.amazonaws.com/dev/task/complete', {
+      const response = await fetch(`${HTTPApiTaskEndpoint}}/task/complete`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -131,7 +163,7 @@ const TaskList = () => {
           Create Task
         </button>
       </div>
-      {/* <button onClick={handleCreateTask}>Create Task</button> */}
+      
       <br /><br /><br />
       <table style={{ borderCollapse: 'collapse', width: '100%' }}>
         <thead>
@@ -183,7 +215,7 @@ const TaskList = () => {
   );
 };
 
-// CSS styles for table headers
+
 const tableHeaderStyle = {
     backgroundColor: '#f2f2f2',
     padding: '8px',
@@ -191,7 +223,7 @@ const tableHeaderStyle = {
     border: '1px solid #ddd',
   };
   
-  // CSS styles for table cells
+  
   const tableCellStyle = {
     padding: '8px',
     textAlign: 'left',

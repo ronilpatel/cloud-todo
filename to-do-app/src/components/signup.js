@@ -1,15 +1,51 @@
 // SignUpPage.js
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import AWS from 'aws-sdk';
 
 const SignUpPage = () => {
-
+  const [taskCreateEndpointUrl, setTaskCreateEndpointURL] = useState('');
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     email: '',
     password: '',
     name: '',
   });
+
+  useEffect(() => {
+   
+    AWS.config.update({
+      accessKeyId: 'ASIASWTOHHX6P7GYTTMU',
+      secretAccessKey: 'gxkLlFwNTSVDpVWTtmsMTIxLkZSyMfUiLvUWtgVG',
+      sessionToken: 'FwoGZXIvYXdzEEQaDFSrGOrSowTpBS/3dyLAAYUVTlGI1o4TUy3R8Rpbl6AdUBukcLo2nkd3yJwQEBj0our58B7jsR/d5csMRB852TfnloAIwNALCYDw5KYiSmipKJG69k9cuFuGZ9OVoQ9B+/aZt6GqhmTnEyRcBCUxt92+SG36XjwON7GWkISQWcwpx/4cWp7pOidq+mB+nBnX0tlnLj55yRNZNQXafQSb6BcuDqALrOUWpjYLFdVgM7lBmM4u7MKi44njcipBpo+dFEZuDhkB2RQcRCvXbMYynyil5KGmBjIt58OGa5CNiwX/Q5wK6mu1gAyRPXXRPJ5u+MMLX1mttz2VQkOpuFQde5oSwS0c',
+      region: 'us-east-1',
+    });
+    
+    const secretsManager = new AWS.SecretsManager();
+    
+    const secretName = 'prod/todoapp/reactjs';
+    const params = {
+      SecretId: secretName,
+    };
+  
+    secretsManager.getSecretValue(params, function (err, data) {
+      if (err) {
+        console.log('Error retrieving secret:', err);
+      } else {
+        console.log(data);
+        if ('SecretString' in data) {
+          const secretString = data.SecretString;
+          
+          const secretData = JSON.parse(secretString);
+          console.log(secretData);
+          setTaskCreateEndpointURL(secretData.CreateTaskAPIEndpoint);
+        } else {
+          console.log('Binary secret not supported.');
+        }
+      }
+    });
+  }, []);
+
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -28,7 +64,7 @@ const SignUpPage = () => {
     e.preventDefault();
     
     try {
-      const response = await fetch('https://6y37iig8fi.execute-api.us-east-1.amazonaws.com/dev/user/register', {
+        const response = await fetch(`${taskCreateEndpointUrl}/register`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -40,7 +76,6 @@ const SignUpPage = () => {
         throw new Error('Failed to register. Please try again.');
       }
 
-      // The API response can be processed here if needed
       console.log('Registration successful!');
 
       navigate('/login');
@@ -95,6 +130,7 @@ const SignUpPage = () => {
     </div>
   );
 };
+
 const containerStyle = {
   display: 'flex',
   flexDirection: 'column',
@@ -110,7 +146,6 @@ const headingStyle = {
   marginTop: '30px',
 };
 
-// CSS styles for the form container
 const formContainerStyle = {
   width: '350px',
   padding: '30px',
@@ -121,7 +156,7 @@ const formContainerStyle = {
 };
 
 const inputStyle = {
-  width: '93%', // Make all text fields the same width as the form container
+  width: '93%', 
   padding: '10px',
   borderRadius: '4px',
   border: '1px solid #ddd',
@@ -130,20 +165,20 @@ const inputStyle = {
 };
 
 const signupButtonStyle = {
-  width: '100%', // Make the button the same width as the form container
-  padding: '10px', // Optional: Add padding to the button
-  background: 'green', // Green background color
-  color: '#fff', // White text color
-  border: 'none', // Remove button border
-  borderRadius: '4px', // Add border-radius for rounded corners
-  cursor: 'pointer', // Show pointer cursor on hover
+  width: '100%', 
+  padding: '10px', 
+  background: 'green', 
+  color: '#fff', 
+  border: 'none',
+  borderRadius: '4px', 
+  cursor: 'pointer',
   marginTop: '10px',
 };
 
 const loginButtonStyle = {
   ...signupButtonStyle,
-  background: '#4285F4', // Blue background color
-  marginTop: '20px', // Add some space between the buttons
+  background: '#4285F4',
+  marginTop: '20px',
 };
 
 

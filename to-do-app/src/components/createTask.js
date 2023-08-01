@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
+import AWS from 'aws-sdk';
 
 console.log(JSON.parse(localStorage.getItem("user")));
 
 const TaskForm = () => {
-
+  const [taskCreateEndpointUrl, setTaskCreateEndpointURL] = useState('');
   const location = useLocation();
 
   useEffect(() => {
@@ -13,6 +14,37 @@ const TaskForm = () => {
     if (location.state) {
       setFormData(location.state);
     }
+
+    AWS.config.update({
+      accessKeyId: 'ASIASWTOHHX6P7GYTTMU',
+      secretAccessKey: 'gxkLlFwNTSVDpVWTtmsMTIxLkZSyMfUiLvUWtgVG',
+      sessionToken: 'FwoGZXIvYXdzEEQaDFSrGOrSowTpBS/3dyLAAYUVTlGI1o4TUy3R8Rpbl6AdUBukcLo2nkd3yJwQEBj0our58B7jsR/d5csMRB852TfnloAIwNALCYDw5KYiSmipKJG69k9cuFuGZ9OVoQ9B+/aZt6GqhmTnEyRcBCUxt92+SG36XjwON7GWkISQWcwpx/4cWp7pOidq+mB+nBnX0tlnLj55yRNZNQXafQSb6BcuDqALrOUWpjYLFdVgM7lBmM4u7MKi44njcipBpo+dFEZuDhkB2RQcRCvXbMYynyil5KGmBjIt58OGa5CNiwX/Q5wK6mu1gAyRPXXRPJ5u+MMLX1mttz2VQkOpuFQde5oSwS0c',
+      region: 'us-east-1',
+    });
+
+    const secretsManager = new AWS.SecretsManager();
+    
+    const secretName = 'prod/todoapp/reactjs';
+    const params = {
+      SecretId: secretName,
+    };
+
+    secretsManager.getSecretValue(params, function (err, data) {
+      if (err) {
+        console.log('Error retrieving secret:', err);
+      } else {
+        console.log(data);
+        if ('SecretString' in data) {
+          const secretString = data.SecretString;
+          
+          const secretData = JSON.parse(secretString);
+          console.log(secretData);
+          setTaskCreateEndpointURL(secretData.CreateTaskAPIEndpoint);
+        } else {
+          console.log('Binary secret not supported.');
+        }
+      }
+    });
   }, [])
 
   const navigate = useNavigate();
@@ -37,7 +69,7 @@ const TaskForm = () => {
     e.preventDefault();
     
     try {
-      const apiURL = 'https://i0zuxml940.execute-api.us-east-1.amazonaws.com/dev/task';
+      const apiURL = `${taskCreateEndpointUrl}/task`;
       const user = JSON.parse(localStorage.getItem("user"));;
       const dataToSend = {
         ...formData,
@@ -158,7 +190,7 @@ const formStyle = {
 };
 
 const formGroupStyle = {
-  marginBottom: '20px', // Add spacing between form fields
+  marginBottom: '20px', 
 };
 
 const buttonStyle = {
@@ -179,7 +211,7 @@ const headerStyle = {
   flexDirection: 'column',
   justifyContent: 'center',
   alignItems: 'center',
-  marginBottom: '20px', // Add spacing between header and form
+  marginBottom: '20px',
 };
 
 export default TaskForm;
