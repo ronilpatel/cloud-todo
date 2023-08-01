@@ -55,7 +55,9 @@ const TaskList = () => {
 
   const fetchTasks = async (user_id) => {
     try {
-      const response = await fetch(`${HTTPApiTaskEndpoint}/task/${user_id}`);
+      // const response = await fetch(`${HTTPApiTaskEndpoint}/task/${user_id}`);
+      const response = await fetch(`https://2krwbmgcvj.execute-api.us-east-1.amazonaws.com/task/${user_id}`);
+      
       if (!response.ok) {
         throw new Error('Failed to fetch tasks.');
       }
@@ -75,7 +77,9 @@ const TaskList = () => {
   const handleDelete = async (task) => {
     try {
         console.log(task);
-      const response = await fetch(`${HTTPApiTaskEndpoint}/task/${task}`, {
+      // const response = await fetch(`${HTTPApiTaskEndpoint}/task/${task}`, {
+        const response = await fetch(`https://2krwbmgcvj.execute-api.us-east-1.amazonaws.com/task/${task}`, {
+        
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
@@ -109,7 +113,9 @@ const TaskList = () => {
         status: 'complete',
       };
 
-      const response = await fetch(`${HTTPApiTaskEndpoint}}/task/complete`, {
+      // const response = await fetch(`${HTTPApiTaskEndpoint}}/task/complete`, {
+        const response = await fetch(`https://2krwbmgcvj.execute-api.us-east-1.amazonaws.com/task/complete`, {
+        
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

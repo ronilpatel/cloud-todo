@@ -69,8 +69,9 @@ const TaskForm = () => {
     e.preventDefault();
     
     try {
-      const apiURL = `${taskCreateEndpointUrl}/task`;
-      const user = JSON.parse(localStorage.getItem("user"));;
+      // const apiURL = `${taskCreateEndpointUrl}/task`;
+      const apiURL = `https://i0zuxml940.execute-api.us-east-1.amazonaws.com/dev/task`;
+      const user = JSON.parse(localStorage.getItem("user"));
       const dataToSend = {
         ...formData,
         user,
