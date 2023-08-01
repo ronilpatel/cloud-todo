@@ -23,7 +23,7 @@ const SignUpPage = () => {
     
     const secretsManager = new AWS.SecretsManager();
     
-    const secretName = 'prod/todoapp/reactjs';
+    const secretName = 'prod/todoapp/reactjsapp1';
     const params = {
       SecretId: secretName,
     };
