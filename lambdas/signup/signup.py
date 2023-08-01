@@ -59,5 +59,10 @@ def lambda_handler(event, context):
     
     return {
         'statusCode': status_code,
-        'body': response
+        'body': response,
+        'headers': {
+            'Access-Control-Allow-Headers': 'Content-Type',
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': 'OPTIONS,POST,GET'
+        }
     }

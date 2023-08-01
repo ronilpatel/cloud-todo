@@ -168,7 +168,7 @@ Resources:
           ResponseParameters:
             method.response.header.Access-Control-Allow-Headers: false
             method.response.header.Access-Control-Allow-Methods: false
-            method.response.header.Access-Control-Allow-Origin: false
+            method.response.header.Access-Control-Allow-Origin: "'*'"
           ResponseModels:
             application/json: "Empty"
       Integration:
@@ -228,7 +228,7 @@ Resources:
           ResponseParameters:
             method.response.header.Access-Control-Allow-Headers: false
             method.response.header.Access-Control-Allow-Methods: false
-            method.response.header.Access-Control-Allow-Origin: false
+            method.response.header.Access-Control-Allow-Origin: "'*'"
           ResponseModels:
             application/json: "Empty"
       Integration:
@@ -288,7 +288,7 @@ Resources:
           ResponseParameters:
             method.response.header.Access-Control-Allow-Headers: false
             method.response.header.Access-Control-Allow-Methods: false
-            method.response.header.Access-Control-Allow-Origin: false
+            method.response.header.Access-Control-Allow-Origin: "'*'"
           ResponseModels:
             application/json: "Empty"
       Integration:
@@ -470,8 +470,8 @@ Resources:
   MySecret:
     Type: AWS::SecretsManager::Secret
     Properties:
-      Name: TestApiGateWayLink
-      Description: URL
+      Name: prod/todoapp/reactjsapp1
+      Description: API Gateway URLs for React JS
       SecretString: !Sub
         - |
           {
@@ -482,6 +482,9 @@ Resources:
             Deployment: !Ref TaskCreateAPI,
             Deployment1: !Ref TaskHTTPApiGateway
           }
+    DependsOn:
+      - TaskCreateAPI
+      - TaskHTTPApiGateway
 
 # ========================= EC2 instance Resource =========================
   ReactJsServer:
