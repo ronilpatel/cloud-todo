@@ -486,6 +486,13 @@ Resources:
       - TaskCreateAPI
       - TaskHTTPApiGateway
 
+
+# ========================= SNS Topic =========================
+  SNSTopic1: 
+      Type: AWS::SNS::Topic
+      Properties: 
+        TopicName: !Sub '${SnsTopic}'
+
 # ========================= EC2 instance Resource =========================
   ReactJsServer:
     Type: AWS::EC2::Instance
